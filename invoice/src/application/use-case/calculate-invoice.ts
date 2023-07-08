@@ -1,17 +1,18 @@
 import { CurrencyGateway } from "@/application/gateway";
 import { TransactionRepository } from "@/application/repository";
 import { Invoice } from "@/core/entity";
+import { Clock } from "../clock";
 
 export class CalculateInvoice {
   constructor(
     readonly transactionRepository: TransactionRepository,
-    readonly currencyGateway: CurrencyGateway
+    readonly currencyGateway: CurrencyGateway,
+    readonly clock: Clock
   ) {}
 
   async execute(cardNumber: string) {
-    const today = new Date();
-    const month = today.getMonth() + 1;
-    const year = today.getFullYear();
+    const month = this.clock.getToday().getMonth() + 1;
+    const year = this.clock.getToday().getFullYear();
 
     const currencies = await this.currencyGateway.getCurrencies();
 

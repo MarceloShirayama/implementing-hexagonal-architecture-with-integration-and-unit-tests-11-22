@@ -1,6 +1,8 @@
+import { Clock } from "@/application/clock";
 import { CurrencyGateway } from "@/application/gateway";
 import { TransactionRepository } from "@/application/repository";
 import { CalculateInvoice } from "@/application/use-case";
+import { RealClock } from "@/infra/real-clock";
 
 describe("Calculate invoice use case", () => {
   it("Deve calcular a fatura", async () => {
@@ -26,9 +28,16 @@ describe("Calculate invoice use case", () => {
       },
     };
 
+    const clock: Clock = {
+      getToday() {
+        return new Date("2023-07-10T10:00:00");
+      },
+    };
+
     const calculateInvoice = new CalculateInvoice(
       transactionRepository,
-      currencyGateway
+      currencyGateway,
+      clock
     );
     const output = await calculateInvoice.execute("1234");
 
